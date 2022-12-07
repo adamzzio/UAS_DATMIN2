@@ -1,0 +1,258 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 465px;
+                 background-color: #222222;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+             #loadingBar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width: 100%;
+                 height: 465px;
+                 background-color:rgba(200,200,200,0.8);
+                 -webkit-transition: all 0.5s ease;
+                 -moz-transition: all 0.5s ease;
+                 -ms-transition: all 0.5s ease;
+                 -o-transition: all 0.5s ease;
+                 transition: all 0.5s ease;
+                 opacity:1;
+             }
+
+             #bar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width:20px;
+                 height:20px;
+                 margin:auto auto auto auto;
+                 border-radius:11px;
+                 border:2px solid rgba(30,30,30,0.05);
+                 background: rgb(0, 173, 246); /* Old browsers */
+                 box-shadow: 2px 0px 4px rgba(0,0,0,0.4);
+             }
+
+             #border {
+                 position:absolute;
+                 top:10px;
+                 left:10px;
+                 width:500px;
+                 height:23px;
+                 margin:auto auto auto auto;
+                 box-shadow: 0px 0px 4px rgba(0,0,0,0.2);
+                 border-radius:10px;
+             }
+
+             #text {
+                 position:absolute;
+                 top:8px;
+                 left:530px;
+                 width:30px;
+                 height:50px;
+                 margin:auto auto auto auto;
+                 font-size:22px;
+                 color: #000000;
+             }
+
+             div.outerBorder {
+                 position:relative;
+                 top:400px;
+                 width:600px;
+                 height:44px;
+                 margin:auto auto auto auto;
+                 border:8px solid rgba(0,0,0,0.1);
+                 background: rgb(252,252,252); /* Old browsers */
+                 background: -moz-linear-gradient(top,  rgba(252,252,252,1) 0%, rgba(237,237,237,1) 100%); /* FF3.6+ */
+                 background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(252,252,252,1)), color-stop(100%,rgba(237,237,237,1))); /* Chrome,Safari4+ */
+                 background: -webkit-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Chrome10+,Safari5.1+ */
+                 background: -o-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Opera 11.10+ */
+                 background: -ms-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* IE10+ */
+                 background: linear-gradient(to bottom,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* W3C */
+                 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#ededed',GradientType=0 ); /* IE6-9 */
+                 border-radius:72px;
+                 box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+             }
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+            <div id="loadingBar">
+              <div class="outerBorder">
+                <div id="text">0%</div>
+                <div id="border">
+                  <div id="bar"></div>
+                </div>
+              </div>
+            </div>
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#97c2fc", "font": {"color": "white"}, "id": "@pradazooka", "label": "@pradazooka", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@ChatibBasri", "label": "@ChatibBasri", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@MustakimMuzafie", "label": "@MustakimMuzafie", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@Rifai92180066", "label": "@Rifai92180066", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@CNNIndonesia", "label": "@CNNIndonesia", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@Omnyaguntur", "label": "@Omnyaguntur", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@HadiwijoyoM", "label": "@HadiwijoyoM", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@aiziaRM", "label": "@aiziaRM", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@noras_raja", "label": "@noras_raja", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@CoffeLeft", "label": "@CoffeLeft", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@robikpiliang", "label": "@robikpiliang", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@berjalankekiri", "label": "@berjalankekiri", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@taksuka", "label": "@taksuka", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@hapusingatanku", "label": "@hapusingatanku", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@raihviguruh", "label": "@raihviguruh", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@prastyo_d", "label": "@prastyo_d", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@ananda2906", "label": "@ananda2906", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@sudrajat_azhar", "label": "@sudrajat_azhar", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@riskanourmawati", "label": "@riskanourmawati", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@RacunBelanja", "label": "@RacunBelanja", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@momoygie", "label": "@momoygie", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@rahardianrd", "label": "@rahardianrd", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@MiguelDelaney", "label": "@MiguelDelaney", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@idextratime", "label": "@idextratime", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@kresnaaay", "label": "@kresnaaay", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@julai_slebew", "label": "@julai_slebew", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@Wilicious9", "label": "@Wilicious9", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@RikaTapioka", "label": "@RikaTapioka", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@ataslogika", "label": "@ataslogika", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@chakti_yudha", "label": "@chakti_yudha", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@Hadi_kusm4n7O", "label": "@Hadi_kusm4n7O", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@ExsaDika", "label": "@ExsaDika", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@danny_marvelle", "label": "@danny_marvelle", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@taktaulahitu", "label": "@taktaulahitu", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@iilhamGod", "label": "@iilhamGod", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@de_mrn14", "label": "@de_mrn14", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@yins123", "label": "@yins123", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@legendalegends", "label": "@legendalegends", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@AdrianPolitani", "label": "@AdrianPolitani", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@geloraco", "label": "@geloraco", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@ZainalM10798843", "label": "@ZainalM10798843", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@abdullahpriono", "label": "@abdullahpriono", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@teguhpur", "label": "@teguhpur", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@spizacallea", "label": "@spizacallea", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@NotaboutSlyther", "label": "@NotaboutSlyther", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@eden_rmd", "label": "@eden_rmd", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@gameintelizen", "label": "@gameintelizen", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@AtreusGaming6", "label": "@AtreusGaming6", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@Brud123456", "label": "@Brud123456", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@carx_technology", "label": "@carx_technology", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@JessicaVVJay", "label": "@JessicaVVJay", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@DoraemonHariIni", "label": "@DoraemonHariIni", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@alanyuliprat_", "label": "@alanyuliprat_", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@xxxervvv", "label": "@xxxervvv", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@BrighterworldII", "label": "@BrighterworldII", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@_buckyswife_", "label": "@_buckyswife_", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@coretanpluto", "label": "@coretanpluto", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@tanyarlfes", "label": "@tanyarlfes", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@bolonhuta1", "label": "@bolonhuta1", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@nadasimamoraa", "label": "@nadasimamoraa", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@Livdorr", "label": "@Livdorr", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@euisNN", "label": "@euisNN", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@ihsanagaz", "label": "@ihsanagaz", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@SiaranBolaLive", "label": "@SiaranBolaLive", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@Boyked02", "label": "@Boyked02", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@ranobrata", "label": "@ranobrata", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@Askrlfess", "label": "@Askrlfess", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@enaknyangapainn", "label": "@enaknyangapainn", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@ApaKamuStress", "label": "@ApaKamuStress", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@sbtcon", "label": "@sbtcon", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@winterscurse__", "label": "@winterscurse__", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@TheAthleticFC", "label": "@TheAthleticFC", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@anasnury", "label": "@anasnury", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@sintikheanggi", "label": "@sintikheanggi", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@lorenza_yp", "label": "@lorenza_yp", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@belviero", "label": "@belviero", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@mindesmineEe", "label": "@mindesmineEe", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@bibulbunny_", "label": "@bibulbunny_", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@AlGhazastore", "label": "@AlGhazastore", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@memefess", "label": "@memefess", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@arabiicca", "label": "@arabiicca", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@sbyfess", "label": "@sbyfess", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@naturalman27", "label": "@naturalman27", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@mozand", "label": "@mozand", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@HelmiFelis_", "label": "@HelmiFelis_", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@isnankambing", "label": "@isnankambing", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@YouTube", "label": "@YouTube", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@SyRiyadi", "label": "@SyRiyadi", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@adadisiniii_", "label": "@adadisiniii_", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@mohmahfudmd", "label": "@mohmahfudmd", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@Kwang_Line17", "label": "@Kwang_Line17", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@kimmseungmiin", "label": "@kimmseungmiin", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@cherryandmane", "label": "@cherryandmane", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@PinontoanUtari", "label": "@PinontoanUtari", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@kompascom", "label": "@kompascom", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@qalqalahsughra", "label": "@qalqalahsughra", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@panditfootball", "label": "@panditfootball", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@dklzin", "label": "@dklzin", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@eisiou", "label": "@eisiou", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@Gonopane1", "label": "@Gonopane1", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@4zuurr444_05h1N", "label": "@4zuurr444_05h1N", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@aghi_raharjo", "label": "@aghi_raharjo", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@Redscholars", "label": "@Redscholars", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@KentolGedhe", "label": "@KentolGedhe", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@txtdrimedia", "label": "@txtdrimedia", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@eko_samosir90", "label": "@eko_samosir90", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@BolaBolaAja", "label": "@BolaBolaAja", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@aikaragisa", "label": "@aikaragisa", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@Rizal48542948", "label": "@Rizal48542948", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@agangcalledCCC", "label": "@agangcalledCCC", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@keyspams", "label": "@keyspams", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@noiseofelio", "label": "@noiseofelio", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@kimjichu_12", "label": "@kimjichu_12", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@hadiansyah_han2", "label": "@hadiansyah_han2", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@FaktaSepakbola", "label": "@FaktaSepakbola", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@AdiyatJatiW", "label": "@AdiyatJatiW", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@relevo", "label": "@relevo", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@JohnSnowFor2019", "label": "@JohnSnowFor2019", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@howmanystarsare", "label": "@howmanystarsare", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@Aini_And_i", "label": "@Aini_And_i", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@OtherZoa", "label": "@OtherZoa", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@OtherBangchan", "label": "@OtherBangchan", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@bangtan14_ym", "label": "@bangtan14_ym", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@yourcuteebby", "label": "@yourcuteebby", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@naganoblues", "label": "@naganoblues", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@seawindu", "label": "@seawindu", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@kangnugo85", "label": "@kangnugo85", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@andiana", "label": "@andiana", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@ijalhasibuan", "label": "@ijalhasibuan", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@TunggulFL", "label": "@TunggulFL", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@sirubiarko", "label": "@sirubiarko", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@lalicha_me", "label": "@lalicha_me", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@miykremez", "label": "@miykremez", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@ispeispeanjime", "label": "@ispeispeanjime", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@mhwnk_", "label": "@mhwnk_", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@pacarpjw", "label": "@pacarpjw", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@25st4r", "label": "@25st4r", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@rezkynugrahaa_", "label": "@rezkynugrahaa_", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@SMDStudioo", "label": "@SMDStudioo", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@gdrmwn", "label": "@gdrmwn", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@registaco", "label": "@registaco", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@Taufik_reza", "label": "@Taufik_reza", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@WongIndonesiaOK", "label": "@WongIndonesiaOK", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@PartaiSocmed", "label": "@PartaiSocmed", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@uremaham", "label": "@uremaham", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@bagihumor", "label": "@bagihumor", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@rifdanhanif", "label": "@rifdanhanif", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@ekowahyujunaid_", "label": "@ekowahyujunaid_", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@Ayidan9", "label": "@Ayidan9", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@VisitEngland", "label": "@VisitEngland", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@aunrrahman", "label": "@aunrrahman", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@fandikaokdiba", "label": "@fandikaokdiba", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@bedazzlingyou", "label": "@bedazzlingyou", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@worksfess", "label": "@worksfess", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@holiwotah", "label": "@holiwotah", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@arsyakindo100", "label": "@arsyakindo100", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@Mirandarajetha", "label": "@Mirandarajetha", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@________ads", "label": "@________ads", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@wildwestraven", "label": "@wildwestraven", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@Ghani_Kamala", "label": "@Ghani_Kamala", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@jogjamnfs", "label": "@jogjamnfs", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@Zaenal58788427", "label": "@Zaenal58788427", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@hama_negara", "label": "@hama_negara", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@KompasTV", "label": "@KompasTV", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@aksaradhitama", "label": "@aksaradhitama", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@urrrlips", "label": "@urrrlips", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@purpleluvyuu", "label": "@purpleluvyuu", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@vajunako", "label": "@vajunako", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@aliwardhanamuda", "label": "@aliwardhanamuda", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@kuliahtipes", "label": "@kuliahtipes", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@salsabeela", "label": "@salsabeela", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@remoteskillsac", "label": "@remoteskillsac", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@Chanohee", "label": "@Chanohee", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@xiazoting", "label": "@xiazoting", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@PancaSurbakti", "label": "@PancaSurbakti", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@Kemendag", "label": "@Kemendag", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@jokowi", "label": "@jokowi", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@NotNotoNoto", "label": "@NotNotoNoto", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@emelia_yanti", "label": "@emelia_yanti", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@amphirionnn", "label": "@amphirionnn", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@barnadi", "label": "@barnadi", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@amandadwitia", "label": "@amandadwitia", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@alfarooqhbb", "label": "@alfarooqhbb", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@convomfs", "label": "@convomfs", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@onthemilkywayyy", "label": "@onthemilkywayyy", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@sexiciii", "label": "@sexiciii", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@Bluechasaurus", "label": "@Bluechasaurus", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@AirishRei", "label": "@AirishRei", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@fs_lss", "label": "@fs_lss", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@Cryptofess_", "label": "@Cryptofess_", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@Oodhi_tah", "label": "@Oodhi_tah", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@wandystjk2", "label": "@wandystjk2", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@NarimoPakde", "label": "@NarimoPakde", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@BennyHarmanID", "label": "@BennyHarmanID", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@CumCum70749885", "label": "@CumCum70749885", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@Ari37642311", "label": "@Ari37642311", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@OSoekaryo", "label": "@OSoekaryo", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@rudi_kadarisman", "label": "@rudi_kadarisman", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@HensuAja", "label": "@HensuAja", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@zulfanhadi_", "label": "@zulfanhadi_", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@brokenrenginang", "label": "@brokenrenginang", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@leggillimens", "label": "@leggillimens", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@KilasKlaten", "label": "@KilasKlaten", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@puanmaharani_ri", "label": "@puanmaharani_ri", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@ganjarpranowo", "label": "@ganjarpranowo", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@PDemokrat", "label": "@PDemokrat", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@sakitotak3", "label": "@sakitotak3", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@ferizandra", "label": "@ferizandra", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@ZAEffendy", "label": "@ZAEffendy", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@riri_nesia", "label": "@riri_nesia", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@vanillarinapr", "label": "@vanillarinapr", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@Edi_1892", "label": "@Edi_1892", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@ChoirunnisaYul2", "label": "@ChoirunnisaYul2", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@aboxreza", "label": "@aboxreza", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@rayvieralaxmana", "label": "@rayvieralaxmana", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@dikaraditya99", "label": "@dikaraditya99", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@sundingjalila", "label": "@sundingjalila", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@Wong_Njerodalem", "label": "@Wong_Njerodalem", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@merapi_uncover", "label": "@merapi_uncover", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@Ojan57613143", "label": "@Ojan57613143", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@SidneyId", "label": "@SidneyId", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@imaffanimokay", "label": "@imaffanimokay", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@rangersbiruuuuu", "label": "@rangersbiruuuuu", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@bieexia", "label": "@bieexia", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@Riyansupyans", "label": "@Riyansupyans", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@greenxteuthic", "label": "@greenxteuthic", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@MFarhan_Han", "label": "@MFarhan_Han", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@IkhtiromS", "label": "@IkhtiromS", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@ResidentSammy", "label": "@ResidentSammy", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@DigitalBogor", "label": "@DigitalBogor", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "@Usuludin321", "label": "@Usuludin321", "shape": "dot", "size": 10}]);
+                  edges = new vis.DataSet([{"from": "@pradazooka", "to": "@ChatibBasri", "width": 1}, {"from": "@pradazooka", "to": "@MustakimMuzafie", "width": 1}, {"from": "@Rifai92180066", "to": "@CNNIndonesia", "width": 1}, {"from": "@CNNIndonesia", "to": "@Omnyaguntur", "width": 1}, {"from": "@CNNIndonesia", "to": "@HadiwijoyoM", "width": 1}, {"from": "@CNNIndonesia", "to": "@aiziaRM", "width": 1}, {"from": "@CNNIndonesia", "to": "@noras_raja", "width": 1}, {"from": "@CNNIndonesia", "to": "@CoffeLeft", "width": 1}, {"from": "@CNNIndonesia", "to": "@robikpiliang", "width": 1}, {"from": "@CNNIndonesia", "to": "@berjalankekiri", "width": 1}, {"from": "@CNNIndonesia", "to": "@taksuka", "width": 1}, {"from": "@CNNIndonesia", "to": "@hapusingatanku", "width": 1}, {"from": "@CNNIndonesia", "to": "@raihviguruh", "width": 1}, {"from": "@CNNIndonesia", "to": "@prastyo_d", "width": 1}, {"from": "@CNNIndonesia", "to": "@ananda2906", "width": 1}, {"from": "@CNNIndonesia", "to": "@sudrajat_azhar", "width": 1}, {"from": "@riskanourmawati", "to": "@RacunBelanja", "width": 1}, {"from": "@riskanourmawati", "to": "@momoygie", "width": 1}, {"from": "@rahardianrd", "to": "@MiguelDelaney", "width": 1}, {"from": "@rahardianrd", "to": "@idextratime", "width": 1}, {"from": "@rahardianrd", "to": "@kresnaaay", "width": 1}, {"from": "@rahardianrd", "to": "@julai_slebew", "width": 1}, {"from": "@idextratime", "to": "@Wilicious9", "width": 1}, {"from": "@idextratime", "to": "@RikaTapioka", "width": 1}, {"from": "@idextratime", "to": "@ataslogika", "width": 1}, {"from": "@idextratime", "to": "@chakti_yudha", "width": 1}, {"from": "@idextratime", "to": "@Hadi_kusm4n7O", "width": 1}, {"from": "@idextratime", "to": "@ExsaDika", "width": 1}, {"from": "@idextratime", "to": "@danny_marvelle", "width": 1}, {"from": "@idextratime", "to": "@taktaulahitu", "width": 1}, {"from": "@idextratime", "to": "@iilhamGod", "width": 1}, {"from": "@idextratime", "to": "@de_mrn14", "width": 1}, {"from": "@idextratime", "to": "@yins123", "width": 1}, {"from": "@idextratime", "to": "@legendalegends", "width": 1}, {"from": "@AdrianPolitani", "to": "@geloraco", "width": 1}, {"from": "@geloraco", "to": "@ZainalM10798843", "width": 1}, {"from": "@geloraco", "to": "@abdullahpriono", "width": 1}, {"from": "@teguhpur", "to": "@spizacallea", "width": 1}, {"from": "@NotaboutSlyther", "to": "@eden_rmd", "width": 1}, {"from": "@gameintelizen", "to": "@AtreusGaming6", "width": 1}, {"from": "@gameintelizen", "to": "@Brud123456", "width": 1}, {"from": "@gameintelizen", "to": "@carx_technology", "width": 1}, {"from": "@JessicaVVJay", "to": "@DoraemonHariIni", "width": 1}, {"from": "@alanyuliprat_", "to": "@xxxervvv", "width": 1}, {"from": "@BrighterworldII", "to": "@_buckyswife_", "width": 1}, {"from": "@BrighterworldII", "to": "@coretanpluto", "width": 1}, {"from": "@BrighterworldII", "to": "@tanyarlfes", "width": 1}, {"from": "@bolonhuta1", "to": "@nadasimamoraa", "width": 1}, {"from": "@Livdorr", "to": "@euisNN", "width": 1}, {"from": "@ihsanagaz", "to": "@SiaranBolaLive", "width": 1}, {"from": "@SiaranBolaLive", "to": "@Boyked02", "width": 1}, {"from": "@ranobrata", "to": "@Askrlfess", "width": 1}, {"from": "@Askrlfess", "to": "@enaknyangapainn", "width": 1}, {"from": "@ApaKamuStress", "to": "@sbtcon", "width": 1}, {"from": "@Wilicious9", "to": "@RikaTapioka", "width": 1}, {"from": "@Wilicious9", "to": "@winterscurse__", "width": 1}, {"from": "@Wilicious9", "to": "@TheAthleticFC", "width": 1}, {"from": "@RikaTapioka", "to": "@TheAthleticFC", "width": 1}, {"from": "@RikaTapioka", "to": "@winterscurse__", "width": 1}, {"from": "@anasnury", "to": "@sintikheanggi", "width": 1}, {"from": "@anasnury", "to": "@lorenza_yp", "width": 1}, {"from": "@anasnury", "to": "@belviero", "width": 1}, {"from": "@mindesmineEe", "to": "@bibulbunny_", "width": 1}, {"from": "@AlGhazastore", "to": "@memefess", "width": 1}, {"from": "@arabiicca", "to": "@sbyfess", "width": 1}, {"from": "@naturalman27", "to": "@mozand", "width": 1}, {"from": "@naturalman27", "to": "@HelmiFelis_", "width": 1}, {"from": "@isnankambing", "to": "@YouTube", "width": 1}, {"from": "@YouTube", "to": "@SyRiyadi", "width": 1}, {"from": "@adadisiniii_", "to": "@mohmahfudmd", "width": 1}, {"from": "@Kwang_Line17", "to": "@kimmseungmiin", "width": 1}, {"from": "@Kwang_Line17", "to": "@cherryandmane", "width": 1}, {"from": "@PinontoanUtari", "to": "@kompascom", "width": 1}, {"from": "@qalqalahsughra", "to": "@panditfootball", "width": 1}, {"from": "@dklzin", "to": "@eisiou", "width": 1}, {"from": "@Gonopane1", "to": "@4zuurr444_05h1N", "width": 1}, {"from": "@aghi_raharjo", "to": "@Redscholars", "width": 1}, {"from": "@KentolGedhe", "to": "@txtdrimedia", "width": 1}, {"from": "@eko_samosir90", "to": "@BolaBolaAja", "width": 1}, {"from": "@aikaragisa", "to": "@Rizal48542948", "width": 1}, {"from": "@agangcalledCCC", "to": "@keyspams", "width": 1}, {"from": "@agangcalledCCC", "to": "@noiseofelio", "width": 1}, {"from": "@kimjichu_12", "to": "@hadiansyah_han2", "width": 1}, {"from": "@kimjichu_12", "to": "@FaktaSepakbola", "width": 1}, {"from": "@kimjichu_12", "to": "@AdiyatJatiW", "width": 1}, {"from": "@kimjichu_12", "to": "@relevo", "width": 1}, {"from": "@kimjichu_12", "to": "@JohnSnowFor2019", "width": 1}, {"from": "@FaktaSepakbola", "to": "@howmanystarsare", "width": 1}, {"from": "@FaktaSepakbola", "to": "@Aini_And_i", "width": 1}, {"from": "@relevo", "to": "@howmanystarsare", "width": 1}, {"from": "@OtherZoa", "to": "@OtherBangchan", "width": 1}, {"from": "@bangtan14_ym", "to": "@yourcuteebby", "width": 1}, {"from": "@naganoblues", "to": "@seawindu", "width": 1}, {"from": "@kangnugo85", "to": "@andiana", "width": 1}, {"from": "@ExsaDika", "to": "@ijalhasibuan", "width": 1}, {"from": "@TunggulFL", "to": "@sirubiarko", "width": 1}, {"from": "@lalicha_me", "to": "@miykremez", "width": 1}, {"from": "@ispeispeanjime", "to": "@mhwnk_", "width": 1}, {"from": "@pacarpjw", "to": "@25st4r", "width": 1}, {"from": "@rezkynugrahaa_", "to": "@SMDStudioo", "width": 1}, {"from": "@gdrmwn", "to": "@registaco", "width": 1}, {"from": "@yins123", "to": "@Taufik_reza", "width": 1}, {"from": "@WongIndonesiaOK", "to": "@PartaiSocmed", "width": 1}, {"from": "@uremaham", "to": "@bagihumor", "width": 1}, {"from": "@rifdanhanif", "to": "@ekowahyujunaid_", "width": 1}, {"from": "@Ayidan9", "to": "@VisitEngland", "width": 1}, {"from": "@Ayidan9", "to": "@aunrrahman", "width": 1}, {"from": "@aunrrahman", "to": "@fandikaokdiba", "width": 1}, {"from": "@bedazzlingyou", "to": "@worksfess", "width": 1}, {"from": "@bedazzlingyou", "to": "@holiwotah", "width": 1}, {"from": "@arsyakindo100", "to": "@Mirandarajetha", "width": 1}, {"from": "@________ads", "to": "@wildwestraven", "width": 1}, {"from": "@Ghani_Kamala", "to": "@jogjamnfs", "width": 1}, {"from": "@Zaenal58788427", "to": "@hama_negara", "width": 1}, {"from": "@Zaenal58788427", "to": "@KompasTV", "width": 1}, {"from": "@aksaradhitama", "to": "@urrrlips", "width": 1}, {"from": "@purpleluvyuu", "to": "@vajunako", "width": 1}, {"from": "@aliwardhanamuda", "to": "@kuliahtipes", "width": 1}, {"from": "@salsabeela", "to": "@remoteskillsac", "width": 1}, {"from": "@Chanohee", "to": "@xiazoting", "width": 1}, {"from": "@PancaSurbakti", "to": "@Kemendag", "width": 1}, {"from": "@PancaSurbakti", "to": "@jokowi", "width": 1}, {"from": "@NotNotoNoto", "to": "@emelia_yanti", "width": 1}, {"from": "@emelia_yanti", "to": "@amphirionnn", "width": 1}, {"from": "@barnadi", "to": "@amandadwitia", "width": 1}, {"from": "@alfarooqhbb", "to": "@convomfs", "width": 1}, {"from": "@alfarooqhbb", "to": "@onthemilkywayyy", "width": 1}, {"from": "@alfarooqhbb", "to": "@sexiciii", "width": 1}, {"from": "@alfarooqhbb", "to": "@Bluechasaurus", "width": 1}, {"from": "@convomfs", "to": "@AirishRei", "width": 1}, {"from": "@fs_lss", "to": "@Cryptofess_", "width": 1}, {"from": "@Oodhi_tah", "to": "@wandystjk2", "width": 1}, {"from": "@NarimoPakde", "to": "@BennyHarmanID", "width": 1}, {"from": "@BennyHarmanID", "to": "@CumCum70749885", "width": 1}, {"from": "@BennyHarmanID", "to": "@Ari37642311", "width": 1}, {"from": "@BennyHarmanID", "to": "@OSoekaryo", "width": 1}, {"from": "@BennyHarmanID", "to": "@rudi_kadarisman", "width": 1}, {"from": "@BennyHarmanID", "to": "@HensuAja", "width": 1}, {"from": "@zulfanhadi_", "to": "@brokenrenginang", "width": 1}, {"from": "@zulfanhadi_", "to": "@leggillimens", "width": 1}, {"from": "@KilasKlaten", "to": "@puanmaharani_ri", "width": 1}, {"from": "@KilasKlaten", "to": "@ganjarpranowo", "width": 1}, {"from": "@HensuAja", "to": "@PDemokrat", "width": 1}, {"from": "@HensuAja", "to": "@sakitotak3", "width": 1}, {"from": "@ferizandra", "to": "@ZAEffendy", "width": 1}, {"from": "@riri_nesia", "to": "@vanillarinapr", "width": 1}, {"from": "@Edi_1892", "to": "@ChoirunnisaYul2", "width": 1}, {"from": "@aboxreza", "to": "@rayvieralaxmana", "width": 1}, {"from": "@dikaraditya99", "to": "@sundingjalila", "width": 1}, {"from": "@Wong_Njerodalem", "to": "@merapi_uncover", "width": 1}, {"from": "@Ojan57613143", "to": "@SidneyId", "width": 1}, {"from": "@AirishRei", "to": "@imaffanimokay", "width": 1}, {"from": "@AirishRei", "to": "@rangersbiruuuuu", "width": 1}, {"from": "@bieexia", "to": "@Riyansupyans", "width": 1}, {"from": "@bieexia", "to": "@greenxteuthic", "width": 1}, {"from": "@MFarhan_Han", "to": "@IkhtiromS", "width": 1}, {"from": "@ResidentSammy", "to": "@DigitalBogor", "width": 1}, {"from": "@ResidentSammy", "to": "@Usuludin321", "width": 1}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "repulsion": {
+            "centralGravity": 0.33,
+            "damping": 0.95,
+            "nodeDistance": 420,
+            "springConstant": 0.1,
+            "springLength": 110
+        },
+        "solver": "repulsion",
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+                      network.on("stabilizationProgress", function(params) {
+                          document.getElementById('loadingBar').removeAttribute("style");
+                          var maxWidth = 496;
+                          var minWidth = 20;
+                          var widthFactor = params.iterations/params.total;
+                          var width = Math.max(minWidth,maxWidth * widthFactor);
+                          document.getElementById('bar').style.width = width + 'px';
+                          document.getElementById('text').innerHTML = Math.round(widthFactor*100) + '%';
+                      });
+                      network.once("stabilizationIterationsDone", function() {
+                          document.getElementById('text').innerHTML = '100%';
+                          document.getElementById('bar').style.width = '496px';
+                          document.getElementById('loadingBar').style.opacity = 0;
+                          // really clean the dom element
+                          setTimeout(function () {document.getElementById('loadingBar').style.display = 'none';}, 500);
+                      });
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>
