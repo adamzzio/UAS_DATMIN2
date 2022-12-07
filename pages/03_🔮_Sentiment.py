@@ -7,6 +7,8 @@ from PIL import Image
 import nltk
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
+nltk.download('punkt')
+nltk.download('stopwords')
 import re, string
 import requests
 
